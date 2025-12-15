@@ -47,7 +47,7 @@ const Index = () => {
 
         <div className="grid md:grid-cols-3 gap-8 max-w-4xl w-full">
           <FeatureCard icon={<Users className="w-10 h-10" />} title="Crea tu grupo" description="Crea tu grupo con quien te salga de la picha y que se una cualquiera desde donde quiera" />
-          <FeatureCard icon={<Shuffle className="w-10 h-10" />} title="Sorteo automático" description="Con un clic, el sistema asigna aleatoriamente a quién regala cada participante." />
+          <FeatureCard icon={<Shuffle className="w-10 h-10" />} title="Sorteo automático" description="NO tienes que hacer nada puto vago solo con un click se hace el sorteo" />
           <FeatureCard icon={<Eye className="w-10 h-10" />} title="Secreto garantizado" description="Solo tú puedes ver a quién te toca regalar. ¡Nadie más lo sabrá!" />
         </div>
 
