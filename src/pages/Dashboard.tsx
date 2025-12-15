@@ -378,38 +378,38 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 relative overflow-hidden">
+    <div className="min-h-screen min-h-[100dvh] p-4 md:p-8 relative overflow-hidden">
       <Snowfall />
       <div className="absolute inset-0 bg-gradient-festive opacity-30" />
       
-      <div className="relative z-10 max-w-4xl mx-auto">
-        <header className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-          <div className="flex items-center gap-3">
-            <Gift className="w-10 h-10 text-primary" />
-            <h1 className="text-3xl font-display text-gradient-gold">Amigo Invisible</h1>
+      <div className="relative z-10 max-w-4xl mx-auto pb-safe">
+        <header className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8 gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
+            <h1 className="text-2xl sm:text-3xl font-display text-gradient-gold">Amigo Invisible</h1>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-muted-foreground text-sm">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <span className="text-muted-foreground text-xs sm:text-sm truncate max-w-[120px] sm:max-w-none">
               Hola, <span className="text-foreground">{user?.email?.split('@')[0]}</span>
             </span>
-            <Button variant="ghost" size="sm" onClick={handleSignOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Salir
+            <Button variant="ghost" size="sm" onClick={handleSignOut} className="px-2 sm:px-3">
+              <LogOut className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Salir</span>
             </Button>
           </div>
         </header>
 
-        <div className="flex flex-wrap gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="gold" size="lg">
+              <Button variant="gold" size="lg" className="w-full sm:w-auto text-base py-6 sm:py-3">
                 <Plus className="w-5 h-5 mr-2" />
                 Crear grupo
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-card border-primary/30">
+            <DialogContent className="bg-card border-primary/30 w-[calc(100%-2rem)] sm:w-full max-w-lg mx-auto rounded-xl">
               <DialogHeader>
-                <DialogTitle className="font-display text-2xl text-gradient-gold">Crear nuevo grupo</DialogTitle>
+                <DialogTitle className="font-display text-xl sm:text-2xl text-gradient-gold">Crear nuevo grupo</DialogTitle>
                 <DialogDescription>Crea un grupo e invita a tus amigos con el código</DialogDescription>
               </DialogHeader>
               <div className="space-y-4 pt-4">
@@ -419,9 +419,10 @@ const Dashboard = () => {
                     placeholder="Ej: Amigos del trabajo"
                     value={newGroupName}
                     onChange={(e) => setNewGroupName(e.target.value)}
+                    className="text-base h-12"
                   />
                 </div>
-                <Button variant="gold" className="w-full" onClick={createGroup}>
+                <Button variant="gold" className="w-full h-12 text-base" onClick={createGroup}>
                   Crear grupo
                 </Button>
               </div>
@@ -430,14 +431,14 @@ const Dashboard = () => {
 
           <Dialog open={joinDialogOpen} onOpenChange={setJoinDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto text-base py-6 sm:py-3">
                 <Users className="w-5 h-5 mr-2" />
                 Unirse a grupo
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-card border-primary/30">
+            <DialogContent className="bg-card border-primary/30 w-[calc(100%-2rem)] sm:w-full max-w-lg mx-auto rounded-xl">
               <DialogHeader>
-                <DialogTitle className="font-display text-2xl text-gradient-gold">Unirse a un grupo</DialogTitle>
+                <DialogTitle className="font-display text-xl sm:text-2xl text-gradient-gold">Unirse a un grupo</DialogTitle>
                 <DialogDescription>Introduce el código que te han compartido</DialogDescription>
               </DialogHeader>
               <div className="space-y-4 pt-4">
@@ -448,9 +449,10 @@ const Dashboard = () => {
                     value={joinCode}
                     onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                     maxLength={6}
+                    className="text-base h-12 text-center tracking-widest font-mono"
                   />
                 </div>
-                <Button variant="gold" className="w-full" onClick={joinGroup}>
+                <Button variant="gold" className="w-full h-12 text-base" onClick={joinGroup}>
                   Unirse
                 </Button>
               </div>
@@ -459,39 +461,39 @@ const Dashboard = () => {
         </div>
 
         {groups.length === 0 ? (
-          <Card className="text-center py-12 glow-gold border-primary/20">
+          <Card className="text-center py-10 sm:py-12 glow-gold border-primary/20">
             <CardContent>
-              <Sparkles className="w-16 h-16 text-primary mx-auto mb-4 animate-twinkle" />
-              <h2 className="text-xl font-display text-foreground mb-2">¡Aún no tienes grupos!</h2>
-              <p className="text-muted-foreground">Crea uno nuevo o únete con un código</p>
+              <Sparkles className="w-12 h-12 sm:w-16 sm:h-16 text-primary mx-auto mb-4 animate-twinkle" />
+              <h2 className="text-lg sm:text-xl font-display text-foreground mb-2">¡Aún no tienes grupos!</h2>
+              <p className="text-muted-foreground text-sm sm:text-base">Crea uno nuevo o únete con un código</p>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
             {groups.map((group) => (
               <Card 
                 key={group.id} 
-                className="cursor-pointer hover:border-primary/50 hover:glow-gold transition-all duration-300"
+                className="cursor-pointer hover:border-primary/50 hover:glow-gold transition-all duration-300 active:scale-[0.98]"
                 onClick={() => openGroupDetails(group)}
               >
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <CardTitle className="text-xl">{group.name}</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                  <div className="flex justify-between items-start gap-2">
+                    <CardTitle className="text-lg sm:text-xl">{group.name}</CardTitle>
                     {group.is_drawn && (
-                      <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full">
+                      <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full shrink-0">
                         Sorteado
                       </span>
                     )}
                   </div>
-                  <CardDescription className="flex items-center gap-2">
-                    <span>Código:</span>
-                    <code className="bg-muted px-2 py-1 rounded text-primary font-mono">{group.code}</code>
+                  <CardDescription className="flex items-center gap-2 mt-2">
+                    <span className="text-xs sm:text-sm">Código:</span>
+                    <code className="bg-muted px-2 py-1 rounded text-primary font-mono text-sm">{group.code}</code>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         copyCode(group.code);
                       }}
-                      className="text-muted-foreground hover:text-primary transition-colors"
+                      className="text-muted-foreground hover:text-primary transition-colors p-1"
                     >
                       <Copy className="w-4 h-4" />
                     </button>
@@ -503,40 +505,40 @@ const Dashboard = () => {
         )}
 
         <Dialog open={!!selectedGroup} onOpenChange={(open) => !open && setSelectedGroup(null)}>
-          <DialogContent className="bg-card border-primary/30 max-w-lg">
-            <DialogHeader>
-              <DialogTitle className="font-display text-2xl text-gradient-gold">
+          <DialogContent className="bg-card border-primary/30 w-[calc(100%-1rem)] sm:w-full max-w-lg mx-auto rounded-xl max-h-[90dvh] overflow-hidden flex flex-col">
+            <DialogHeader className="shrink-0">
+              <DialogTitle className="font-display text-xl sm:text-2xl text-gradient-gold">
                 {selectedGroup?.name}
               </DialogTitle>
               <DialogDescription className="flex items-center gap-2">
-                <span>Código:</span>
-                <code className="bg-muted px-2 py-1 rounded text-primary font-mono">{selectedGroup?.code}</code>
+                <span className="text-xs sm:text-sm">Código:</span>
+                <code className="bg-muted px-2 py-1 rounded text-primary font-mono text-sm">{selectedGroup?.code}</code>
                 <button
                   onClick={() => selectedGroup && copyCode(selectedGroup.code)}
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors p-1"
                 >
                   <Copy className="w-4 h-4" />
                 </button>
               </DialogDescription>
             </DialogHeader>
             
-            <div className="space-y-4 pt-4">
+            <div className="space-y-4 pt-4 overflow-y-auto flex-1 -mx-6 px-6">
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-3">
+                <h3 className="text-xs sm:text-sm font-medium text-muted-foreground mb-3">
                   Participantes ({groupMembers.length})
                 </h3>
-                <div className="space-y-2">
+                <div className="space-y-2 max-h-[30vh] overflow-y-auto">
                   {groupMembers.map((member) => (
                     <div
                       key={member.id}
-                      className="flex items-center gap-3 bg-muted/50 px-3 py-2 rounded-lg"
+                      className="flex items-center gap-3 bg-muted/50 px-3 py-2.5 rounded-lg"
                     >
-                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium">
+                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium shrink-0">
                         {member.user_name.charAt(0).toUpperCase()}
                       </div>
-                      <span className="text-foreground">{member.user_name}</span>
+                      <span className="text-foreground text-sm sm:text-base truncate">{member.user_name}</span>
                       {member.user_id === selectedGroup?.created_by && (
-                        <span className="text-xs bg-secondary/20 text-secondary px-2 py-0.5 rounded-full ml-auto">
+                        <span className="text-xs bg-secondary/20 text-secondary px-2 py-0.5 rounded-full ml-auto shrink-0">
                           Admin
                         </span>
                       )}
@@ -547,14 +549,14 @@ const Dashboard = () => {
 
               {selectedGroup?.is_drawn && myAssignment && (
                 <Card className="bg-gradient-to-br from-secondary/20 to-accent/20 border-primary/30 glow-burgundy">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Gift className="w-5 h-5 text-primary" />
+                  <CardHeader className="pb-2 p-4">
+                    <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                      <Gift className="w-5 h-5 text-primary shrink-0" />
                       Tu amigo invisible es:
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-display text-gradient-gold animate-float">
+                  <CardContent className="p-4 pt-0">
+                    <p className="text-xl sm:text-2xl font-display text-gradient-gold animate-float">
                       {myAssignment.display_name}
                     </p>
                   </CardContent>
@@ -564,21 +566,21 @@ const Dashboard = () => {
               {selectedGroup?.created_by === user?.id && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="sm" className="w-full">
+                    <Button variant="destructive" size="sm" className="w-full h-11">
                       <Trash2 className="w-4 h-4 mr-2" />
                       Eliminar grupo
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent>
+                  <AlertDialogContent className="w-[calc(100%-2rem)] sm:w-full max-w-lg mx-auto rounded-xl">
                     <AlertDialogHeader>
                       <AlertDialogTitle>¿Eliminar grupo?</AlertDialogTitle>
                       <AlertDialogDescription>
                         Esta acción no se puede deshacer. Se eliminará el grupo y todos sus participantes.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction onClick={deleteGroup}>Eliminar</AlertDialogAction>
+                    <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                      <AlertDialogCancel className="w-full sm:w-auto">Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={deleteGroup} className="w-full sm:w-auto">Eliminar</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
@@ -590,7 +592,7 @@ const Dashboard = () => {
                     <Button 
                       variant="festive" 
                       size="lg" 
-                      className="w-full"
+                      className="w-full h-12 text-base"
                       disabled={groupMembers.length < 3}
                     >
                       {selectedGroup?.is_drawn ? (
@@ -606,7 +608,7 @@ const Dashboard = () => {
                       )}
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent>
+                  <AlertDialogContent className="w-[calc(100%-2rem)] sm:w-full max-w-lg mx-auto rounded-xl">
                     <AlertDialogHeader>
                       <AlertDialogTitle>
                         {selectedGroup?.is_drawn ? '¿Re-sortear?' : '¿Realizar sorteo?'}
@@ -617,9 +619,9 @@ const Dashboard = () => {
                           : 'Se asignará aleatoriamente un amigo invisible a cada participante. Todos podrán ver su asignación al instante.'}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction onClick={performDraw}>
+                    <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                      <AlertDialogCancel className="w-full sm:w-auto">Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={performDraw} className="w-full sm:w-auto">
                         {selectedGroup?.is_drawn ? 'Re-sortear' : 'Sortear'}
                       </AlertDialogAction>
                     </AlertDialogFooter>
