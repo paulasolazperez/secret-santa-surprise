@@ -71,31 +71,31 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen min-h-[100dvh] flex items-center justify-center p-4 relative overflow-hidden">
       <Snowfall />
       
       <div className="absolute inset-0 bg-gradient-festive opacity-50" />
       
-      <Card className="w-full max-w-md z-10 glow-gold border-primary/30">
-        <CardHeader className="text-center space-y-4">
+      <Card className="w-full max-w-md z-10 glow-gold border-primary/30 mx-4">
+        <CardHeader className="text-center space-y-3 sm:space-y-4 pb-4 sm:pb-6">
           <div className="flex justify-center">
             <div className="relative">
-              <Gift className="w-16 h-16 text-primary animate-float" />
-              <Sparkles className="w-6 h-6 text-gold-light absolute -top-2 -right-2 animate-twinkle" />
+              <Gift className="w-12 h-12 sm:w-16 sm:h-16 text-primary animate-float" />
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-gold-light absolute -top-1 sm:-top-2 -right-1 sm:-right-2 animate-twinkle" />
             </div>
           </div>
-          <CardTitle className="text-3xl text-gradient-gold">
+          <CardTitle className="text-2xl sm:text-3xl text-gradient-gold">
             Amigo Invisible
           </CardTitle>
-          <CardDescription className="text-muted-foreground text-base">
+          <CardDescription className="text-muted-foreground text-sm sm:text-base">
             {isLogin ? 'Inicia sesión para ver tu amigo secreto' : 'Crea tu cuenta para participar'}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
               <div className="space-y-2">
-                <Label htmlFor="displayName" className="text-foreground">Tu nombre</Label>
+                <Label htmlFor="displayName" className="text-foreground text-sm">Tu nombre</Label>
                 <Input
                   id="displayName"
                   type="text"
@@ -103,11 +103,12 @@ const Auth = () => {
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   required={!isLogin}
+                  className="h-12 text-base"
                 />
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground">Email</Label>
+              <Label htmlFor="email" className="text-foreground text-sm">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -115,10 +116,11 @@ const Auth = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="h-12 text-base"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-foreground">Contraseña</Label>
+              <Label htmlFor="password" className="text-foreground text-sm">Contraseña</Label>
               <Input
                 id="password"
                 type="password"
@@ -127,23 +129,24 @@ const Auth = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
+                className="h-12 text-base"
               />
             </div>
-            <Button type="submit" variant="gold" size="lg" className="w-full" disabled={loading}>
+            <Button type="submit" variant="gold" size="lg" className="w-full h-12 text-base" disabled={loading}>
               {loading ? 'Cargando...' : isLogin ? 'Entrar' : 'Crear cuenta'}
             </Button>
           </form>
-          <div className="mt-6 text-center">
+          <div className="mt-5 sm:mt-6 text-center">
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-primary hover:text-gold-light transition-colors text-sm"
+              className="text-primary hover:text-gold-light transition-colors text-sm py-2"
             >
               {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
             </button>
           </div>
-          <div className="mt-4 text-center">
-            <Link to="/" className="text-muted-foreground hover:text-foreground text-sm">
+          <div className="mt-3 sm:mt-4 text-center pb-2">
+            <Link to="/" className="text-muted-foreground hover:text-foreground text-sm py-2 inline-block">
               ← Volver al inicio
             </Link>
           </div>
