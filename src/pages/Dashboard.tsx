@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import Snowfall from '@/components/Snowfall';
-import { Gift, Plus, Users, LogOut, Sparkles, Copy, Shuffle, Eye } from 'lucide-react';
+import { Gift, Plus, Users, LogOut, Sparkles, Copy, Shuffle, Eye, Trash2 } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 interface Group {
@@ -292,6 +293,38 @@ const Dashboard = () => {
     navigate('/');
   };
 
+  const deleteGroup = async () => {
+    if (!selectedGroup || !user) return;
+    
+    if (selectedGroup.created_by !== user.id) {
+      toast.error('Solo el creador del grupo puede eliminarlo');
+      return;
+    }
+
+    try {
+      // First delete all members
+      await supabase
+        .from('group_members')
+        .delete()
+        .eq('group_id', selectedGroup.id);
+
+      // Then delete the group
+      const { error } = await supabase
+        .from('groups')
+        .delete()
+        .eq('id', selectedGroup.id);
+
+      if (error) throw error;
+
+      toast.success('Grupo eliminado correctamente');
+      setSelectedGroup(null);
+      fetchGroups();
+    } catch (error) {
+      console.error('Error deleting group:', error);
+      toast.error('Error al eliminar el grupo');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -483,6 +516,29 @@ const Dashboard = () => {
                     </p>
                   </CardContent>
                 </Card>
+              )}
+
+              {selectedGroup?.created_by === user?.id && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm" className="w-full">
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Eliminar grupo
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>¿Eliminar grupo?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Esta acción no se puede deshacer. Se eliminará el grupo y todos sus participantes.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={deleteGroup}>Eliminar</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
 
               {!selectedGroup?.is_drawn && selectedGroup?.created_by === user?.id && (
