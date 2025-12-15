@@ -33,10 +33,7 @@ const Index = () => {
           <h1 className="text-5xl md:text-7xl font-display font-bold mb-4 text-gradient-gold">
             Amigo Invisible
           </h1>
-          <p className="text-xl md:text-2xl text-foreground/80 max-w-lg mx-auto">
-            Organiza tu sorteo de Amigo Invisible online. 
-            ¡No importa dónde estéis!
-          </p>
+          <p className="text-xl md:text-2xl text-foreground/80 max-w-lg mx-auto">Haz tu amigo invisible desde donde quieras perra</p>
         </header>
 
         <div className="flex flex-col sm:flex-row gap-4 mb-20">
