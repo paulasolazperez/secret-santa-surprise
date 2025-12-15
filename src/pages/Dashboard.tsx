@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import Snowfall from '@/components/Snowfall';
-import { Gift, Plus, Users, LogOut, Sparkles, Copy, Shuffle, Eye, Trash2 } from 'lucide-react';
+import { Gift, Plus, Users, LogOut, Sparkles, Copy, Shuffle, Eye, Trash2, RefreshCw } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
@@ -184,10 +184,7 @@ const Dashboard = () => {
     }
   };
 
-  const openGroupDetails = async (group: Group) => {
-    setSelectedGroup(group);
-    setMyAssignment(null);
-
+  const fetchGroupDetails = useCallback(async (group: Group) => {
     try {
       const { data: membersData, error } = await supabase
         .from('group_members')
@@ -211,7 +208,19 @@ const Dashboard = () => {
         setProfiles(profilesMap);
       }
 
-      if (group.is_drawn && user) {
+      // Fetch latest group state
+      const { data: latestGroup } = await supabase
+        .from('groups')
+        .select('*')
+        .eq('id', group.id)
+        .single();
+
+      if (latestGroup) {
+        setSelectedGroup(latestGroup);
+        setGroups(prev => prev.map(g => g.id === latestGroup.id ? latestGroup : g));
+      }
+
+      if (latestGroup?.is_drawn && user) {
         const myMember = membersData?.find(m => m.user_id === user.id);
         if (myMember?.assigned_to) {
           const { data: assignedProfile } = await supabase
@@ -221,11 +230,45 @@ const Dashboard = () => {
             .single();
           setMyAssignment(assignedProfile || null);
         }
+      } else {
+        setMyAssignment(null);
       }
     } catch (error) {
       console.error('Error fetching group members:', error);
     }
+  }, [user]);
+
+  const openGroupDetails = async (group: Group) => {
+    setSelectedGroup(group);
+    setMyAssignment(null);
+    await fetchGroupDetails(group);
   };
+
+  // Realtime subscription for group updates
+  useEffect(() => {
+    if (!selectedGroup) return;
+
+    const channel = supabase
+      .channel(`group-${selectedGroup.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'group_members',
+          filter: `group_id=eq.${selectedGroup.id}`
+        },
+        () => {
+          // Refetch when members are updated (draw happened)
+          fetchGroupDetails(selectedGroup);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [selectedGroup?.id, fetchGroupDetails]);
 
   const performDraw = async () => {
     if (!selectedGroup || !user) return;
@@ -541,17 +584,47 @@ const Dashboard = () => {
                 </AlertDialog>
               )}
 
-              {!selectedGroup?.is_drawn && selectedGroup?.created_by === user?.id && (
-                <Button 
-                  variant="festive" 
-                  size="lg" 
-                  className="w-full"
-                  onClick={performDraw}
-                  disabled={groupMembers.length < 3}
-                >
-                  <Shuffle className="w-5 h-5 mr-2" />
-                  Realizar sorteo
-                </Button>
+              {selectedGroup?.created_by === user?.id && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      variant="festive" 
+                      size="lg" 
+                      className="w-full"
+                      disabled={groupMembers.length < 3}
+                    >
+                      {selectedGroup?.is_drawn ? (
+                        <>
+                          <RefreshCw className="w-5 h-5 mr-2" />
+                          Re-sortear
+                        </>
+                      ) : (
+                        <>
+                          <Shuffle className="w-5 h-5 mr-2" />
+                          Realizar sorteo
+                        </>
+                      )}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        {selectedGroup?.is_drawn ? '¿Re-sortear?' : '¿Realizar sorteo?'}
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        {selectedGroup?.is_drawn 
+                          ? 'Se borrarán las asignaciones actuales y se hará un nuevo sorteo. Los participantes verán a su nuevo amigo invisible automáticamente.'
+                          : 'Se asignará aleatoriamente un amigo invisible a cada participante. Todos podrán ver su asignación al instante.'}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={performDraw}>
+                        {selectedGroup?.is_drawn ? 'Re-sortear' : 'Sortear'}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
 
               {!selectedGroup?.is_drawn && selectedGroup?.created_by !== user?.id && (
